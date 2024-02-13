@@ -31,7 +31,8 @@ const addBook = async (book) => {
 
 const updateBook = async (book) => {
   try {
-    const response = await axios.put(API_URL, book);
+    const id = book.id;
+    const response = await axios.put(API_URL + id, book);
     return response.data;
   } catch (error) {
     throw error;

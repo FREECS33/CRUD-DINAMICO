@@ -48,7 +48,7 @@
         </b-card-text>
         <b-row v-if="showButtonsIndex === index" class="text-center">
           <b-col>
-            <b-button variant="warning" @click="editBook(book)"
+            <b-button variant="warning" @click="openEditBookModal(book)"
               ><font-awesome-icon icon="fa-solid fa-pen-to-square"
             /></b-button>
           </b-col>
@@ -61,6 +61,7 @@
       </b-card>
     </b-row>
     <AddBookModal @bookAdded="refreshBookList" />
+    <EditBookModal @bookEdited="refreshBookList" :book="selectedBook" />
   </b-container>
 </template>
 
@@ -72,12 +73,14 @@ export default Vue.extend({
   components: {
     ModalSpinner: () => import("../components/Modal.vue"),
     AddBookModal: () => import("../components/AddBookModal.vue"),
+    EditBookModal: () => import("../components/EditBookModal.vue"),
   },
   data() {
     return {
       books: [],
       isLoading: true,
       showButtonsIndex: null,
+      selectedBook: null,
     };
   },
   mounted() {
@@ -99,6 +102,13 @@ export default Vue.extend({
         this.$bvModal.show("addBookModal");
       });
     },
+    openEditBookModal(book) {
+      this.selectedBook = book;
+
+      this.$nextTick(() => {
+        this.$bvModal.show("editBookModal");
+      });
+    },
     refreshBookList() {
       this.getBooks();
     },
@@ -114,7 +124,7 @@ export default Vue.extend({
         bookService.deleteBook(book.id);
         this.books.splice(index, 1);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
   },
